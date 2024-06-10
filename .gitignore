@@ -1,0 +1,42 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore model files and blobs
+local_models/models--*/blobs/
+local_models/models--*/snapshots/*/model.safetensors
+
+# Ignore temporary files
+local_models/tmp*
+local_models/*/tmp*/
+
+# Ignore database files
+embeddings.db
+
+# Ignore feeds and links text files
+feeds.txt
+links.txt
+
+# Ignore any other temporary or log files
+*.tmp
+*.log
+
+# Leave out the main script files
+!main.py
+!scrape.py
+!vec_db.py
+
+# Allow config files
+!local_models/models--*/snapshots/*/config.json
+!local_models/models--*/snapshots/*/README.md
+!local_models/models--*/snapshots/*/sentence_bert_config.json
+!local_models/models--*/snapshots/*/special_tokens_map.json
+!local_models/models--*/snapshots/*/tokenizer.json
+!local_models/models--*/snapshots/*/tokenizer_config.json
+!local_models/models--*/snapshots/*/vocab.txt
+!local_models/models--*/snapshots/*/configuration.py
+!local_models/models--*/snapshots/*/modeling.py
+
+# Ignore virtual environment directories
+venv/
+.env/
