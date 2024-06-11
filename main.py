@@ -16,8 +16,8 @@ from vec_db import store_vectors
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    q_scrape = False
-    q_store = False
+    q_scrape = True
+    q_store = True
 
     if q_scrape:
         links = scrape()

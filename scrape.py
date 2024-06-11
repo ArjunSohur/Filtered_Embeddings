@@ -12,7 +12,7 @@ amount of computation.
 # ---------------------------------------------------------------------------- #
 import feedparser
 import multiprocessing
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -101,8 +101,8 @@ def parse_rss(feeds: list[tuple[str, str]]) -> list[tuple[str, str]]:
   Returns:
       list[tuple[str, str]]: A list of tuples containing the feed name and scraped link.
   """
-  # I use 4 processes because I'm on an 8-core Mac
-  num_multiprocessers: int = 6
+  # I've found that 4 is the fastest for my mac - yours might be different
+  num_multiprocessers: int = 4
   chunk_size: int = len(feeds) // num_multiprocessers + 1
 
   with multiprocessing.Manager() as manager:
@@ -140,6 +140,7 @@ def scrape() -> list[tuple[str, str]]:
         list[tuple[str, str]]: A list of tuples containing the feed name and scraped link.
     """
     start_time: datetime = datetime.now()
+    print("Starting Scraping of RSS feeds")
 
     feeds: list[tuple[str, str]] = get_feeds()  
     links: list[tuple[str, str]] = parse_rss(feeds)  
@@ -147,7 +148,7 @@ def scrape() -> list[tuple[str, str]]:
     end: datetime = datetime.now() 
 
 
-    print("Time taken to get", len(links), "RSS links:", str(end-start_time), "\n")
+    print("Time taken to get", len(links), "RSS links:", str(end-start_time))
 
     return links
 

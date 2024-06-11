@@ -61,7 +61,8 @@ SHM Rugby1, https://www.smh.com.au/rss/sport/nrl.xml
 SHM Rugby2, https://www.smh.com.au/rss/sport/rugby-union.xml
 SMH Culture, https://www.smh.com.au/rss/culture.xml
 SMH Environment, https://www.smh.com.au/rss/environment.xml
-SMH Federal Politics, https://www.smh.com.au/rss/politics/federal.xmlSMH Food, https://www.smh.com.au/rss/goodfood.xml
+SMH Federal Politics, https://www.smh.com.au/rss/politics/federal.xml
+SMH Food, https://www.smh.com.au/rss/goodfood.xml
 SMH Latest, https://www.smh.com.au/rss/feed.xml
 SMH Lifestyle, https://www.smh.com.au/rss/lifestyle.xml
 SMH NSW, https://www.smh.com.au/rss/national/nsw.xml
