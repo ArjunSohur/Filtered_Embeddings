@@ -39,12 +39,12 @@ def create_db() -> None:
     c: sqlite3.Cursor = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS embeddings
                  (url TEXT PRIMARY KEY, 
-                  embedding TEXT,
                   text TEXT,
                   source TEXT,
                   authors TEXT,
                   title TEXT,
-                  publication_date TEXT)''')
+                  publication_date TEXT,
+                  embedding TEXT)''')
     conn.commit()
     conn.close()
 
@@ -60,9 +60,9 @@ def store_in_db(url: str, embedding: torch.Tensor, text: str, source: str, autho
     conn: sqlite3.Connection = sqlite3.connect('embeddings.db')
     c: sqlite3.Cursor = conn.cursor()
     c.execute('''INSERT OR REPLACE INTO embeddings 
-                 (url, embedding, text, source, authors, title, publication_date) 
+                 (url, text, source, authors, title, publication_date, embedding) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)''', 
-              (url, embedding, text, source, ', '.join(authors), title, publication_date))
+              (url, text, source, ', '.join(authors), title, publication_date, embedding))
     conn.commit()
     conn.close()
 
@@ -124,9 +124,10 @@ def process_link(link: Tuple[str, str], embedder: SentenceTransformer) -> None:
         title: str = article.title
         publication: Optional[str] = article.publish_date.strftime("%Y-%m-%d") if article.publish_date else None
 
-        embedding: str = repr(embedder.encode(text, convert_to_tensor=True))
+        embedding = embedder.encode(text, convert_to_tensor=True)
+        embedding_string = '[' + ', '.join([str(value.item()) for value in embedding.flatten()]) + ']'
 
-        store_in_db(url, embedding, text, name, authors, title, publication) 
+        store_in_db(url, embedding_string, text, name, authors, title, publication) 
     except Exception as e:
         print(f"Failed to process {url}: {e}")
 

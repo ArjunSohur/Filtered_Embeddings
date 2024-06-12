@@ -70,10 +70,13 @@ def f_store(bool, links):
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
     q_scrape = False
-    q_store = False
+    q_store = True
 
     links: list[tuple[str, str]] = f_scrape(q_scrape)
+
+    links = links[:10]
+
     f_store(q_store, links)
 
-    data: DataFrame = sql3_as_pd("embeddings.db")
+    # data: DataFrame = sql3_as_pd("embeddings.db")
     
