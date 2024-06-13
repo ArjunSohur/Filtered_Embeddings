@@ -74,8 +74,6 @@ if __name__ == "__main__":
 
     links: list[tuple[str, str]] = f_scrape(q_scrape)
 
-    links = links[:10]
-
     f_store(q_store, links)
 
     # data: DataFrame = sql3_as_pd("embeddings.db")
