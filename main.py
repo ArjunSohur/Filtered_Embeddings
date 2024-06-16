@@ -53,7 +53,7 @@ def f_scrape(bool) -> list[tuple[str, str]]:
 # ---------------------------------------------------------------------------- #
 def f_store(bool, links):
     if bool:
-        embedding_model = "Alibaba-NLP/gte-large-en-v1.5"
+        embedding_model = "Alibaba-NLP_gte-large-en-v1.5"
 
         store_vectors(links, embedding_model)
 
@@ -71,7 +71,7 @@ def f_store(bool, links):
 if __name__ == "__main__":
     q_scrape = False
     q_store = True
-
+    
     links: list[tuple[str, str]] = f_scrape(q_scrape)
 
     f_store(q_store, links)
