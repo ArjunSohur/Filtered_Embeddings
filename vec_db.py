@@ -134,52 +134,12 @@ def process_link(link: Tuple[str, str], embedder: SentenceTransformer) -> None:
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
-# Loading Embedder                                                             #
+# Main Process                                                                 #
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 
-def load_custom_sentence_transformer(model_name_or_path: str) -> SentenceTransformer:
-    """
-    Loads a SentenceTransformer model (pre-trained or custom).
-
-    Args:
-        model_name_or_path: Model name (pre-trained) or path (custom) (str).
-
-    Downloads if missing, then loads the model.
-
-    Returns:
-        Loaded SentenceTransformer model (SentenceTransformer).
-    """
-    # Construct the path to the torch cache directory in the user's home directory
-    cache_folder = os.path.join(os.path.expanduser("~"), ".cache", "torch", "sentence_transformers")
-    model_path = os.path.join(cache_folder, model_name_or_path)
-
-    if not os.path.exists(model_path):
-        print(f"Model '{model_name_or_path}' not found at '{model_path}'. Downloading...\n")
-        
-        os.makedirs(cache_folder, exist_ok=True)
-
-        # I have device as cpu because I am running this on a mac - obviously, change this to gpu if you have a gpu
-        model = SentenceTransformer(model_name_or_path, cache_folder=cache_folder, trust_remote_code=True, device="cpu")
-        model.save(model_path)
-
-        print("Downloading Complete, processing links ...\n")
-    else:
-        print(f"Model '{model_name_or_path}' found at '{model_path}'. Loading...")
-        model = SentenceTransformer(model_path, cache_folder=cache_folder, trust_remote_code=True, device="cpu")
-        print("Loading Complete, processing links ...\n")
-    return model
-
-# ---------------------------------------------------------------------------- #
-#                                                                              #
-# ---------------------------------------------------------------------------- #
-# Main Process                                                                        #
-# ---------------------------------------------------------------------------- #
-#                                                                              #
-# ---------------------------------------------------------------------------- #
-
-def store_vectors(links: List[Tuple[str, str]], embedding_model: str) -> None:
+def store_vectors(links: List[Tuple[str, str]], embedding_model: SentenceTransformer) -> None:
     """
     Stores embeddings for scraped links using multiprocessing.
 
@@ -193,8 +153,7 @@ def store_vectors(links: List[Tuple[str, str]], embedding_model: str) -> None:
 
     start_time: datetime = datetime.now()
 
-    embedder: SentenceTransformer = load_custom_sentence_transformer(embedding_model)
-    if embedder is None:
+    if embedding_model is None:
         return
 
     num_multiprocessers: int = 4
@@ -205,7 +164,7 @@ def store_vectors(links: List[Tuple[str, str]], embedding_model: str) -> None:
         start: int = i * chunk_size
         end: int = min((i + 1) * chunk_size, len(links))
         chunk: List[Tuple[str, str]] = links[start:end]
-        p: multiprocessing.Process = multiprocessing.Process(target=process_links_chunk, args=(chunk, embedder, i+1))
+        p: multiprocessing.Process = multiprocessing.Process(target=process_links_chunk, args=(chunk, embedding_model, i+1))
         processes.append(p)
         p.start()
 
@@ -214,25 +173,4 @@ def store_vectors(links: List[Tuple[str, str]], embedding_model: str) -> None:
     
     end: datetime = datetime.now()
 
-
     print("Time taken to process", len(links), "Articles:", str(end-start_time))
-
-# ---------------------------------------------------------------------------- #
-#                                                                              #
-# ---------------------------------------------------------------------------- #
-# Main                                                                         #
-# ---------------------------------------------------------------------------- #
-#                                                                              #
-# ---------------------------------------------------------------------------- #
-
-if __name__ == "__main__":
-    links: List[Tuple[str, str]] = []
-
-    with open("links.txt", "r") as f:
-        links = f.readlines()
-        for i in range(len(links)):
-            links[i] = tuple(links[i].strip().split(", "))
-
-    embedding_model: str = "Alibaba-NLP/gte-large-en-v1.5"
-
-    store_vectors(links, embedding_model)
