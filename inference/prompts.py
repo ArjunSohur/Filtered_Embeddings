@@ -1,6 +1,6 @@
 
 
-def get_news_report_prompt(data, question):
+def get_news_report_prompt(data, question, length="short"):
     text = list(data["text"])
     titles = list(data["title"])
     authors = list(data["authors"])
@@ -13,14 +13,21 @@ def get_news_report_prompt(data, question):
     prompt = f"""Here is what you will report on: {question}
     
     and here is the context: 
-    {context}"""
+    {context}
+
+    Your report should be {length}."""
 
     system_prompt = """You are an expert on all things news and current events.
     
     As such, people come and ask you questions about what is happening in the
     world.  You will get either a question or the name of a news event, and you
     must provide a comprehensive report on the topic using ONLY the provided
-    context.
+    context.  They will also give you a notion of how long they want the report
+    to be.
+
+    Short ~ your response should be bullet points
+    Medium ~ your response should be about 5-6 sentences and just hit on main points.
+    Long ~ as many as you need to felsh out the topic.
     
     You will have context to help you answer the question, but you must use your
     own words since you want to respect the original author's work.

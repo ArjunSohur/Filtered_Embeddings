@@ -107,6 +107,23 @@ def f_store(bool, links, embedding_model):
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
+# Inference                                                                    #
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+def f_inference(q, data, embedder, length = "Short", llm = "llama3"):
+
+    similar = get_similar(q, data, embedder, top_n=5, threshold=0.5)
+
+    prompt, system_prompt, sources = get_news_report_prompt(similar, q, length)
+
+    response = inference_llm(prompt, system_prompt, llm)
+
+    return response, sources
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
 # Main                                                                         #
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -123,11 +140,12 @@ if __name__ == "__main__":
     data: DataFrame = sql3_as_pd("embeddings.db")
 
     q = "Russia in Ukraine"
-    similar = get_similar(q, data, embedder, top_n=5, threshold=0.5)
+    length = "Medium"
+    llm = "llama3"
 
-    prompt, system_prompt, sources = get_news_report_prompt(similar, q)
+    response, sources = f_inference(q, data, embedder, length=length, llm=llm)
 
-    response = inference_llm(prompt, system_prompt, llm="llama3")
+    word_count = len(response.split())
 
-    print(response, "\n\n", sources)
+    print(response, "\n\n", sources, "\n\n", f"Word Count: {word_count}")
 
