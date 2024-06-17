@@ -8,10 +8,10 @@
 import pandas as pd
 from pandas.core.frame import DataFrame
 
-from scrape import scrape
-from vec_db import store_vectors
+from data_prep.scrape import scrape
+from data_prep.vec_db import store_vectors
 
-from queries import sql3_as_pd, get_similar
+from inference.queries import sql3_as_pd, get_similar
 
 from sentence_transformers import SentenceTransformer
 import os
@@ -63,17 +63,17 @@ def load_custom_sentence_transformer(model_name_or_path: str = "Alibaba-NLP_gte-
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
-def f_scrape(bool) -> list[tuple[str, str]]:
+def f_scrape(bool, num_feeds = None) -> list[tuple[str, str]]:
     if bool:
-        links = scrape()
+        links = scrape(num_feeds)
 
         links = list(set(links))
 
-        with open("links.txt", "w") as f:
+        with open("data_prep/links.txt", "w") as f:
             for name, link in links:
                 f.write(f"{name}, {link}\n")
     else:
-        with open("links.txt", "r") as f:
+        with open("data_prep/links.txt", "r") as f:
             links = f.readlines()
 
             for i in range(len(links)):
@@ -109,10 +109,10 @@ def f_store(bool, links, embedding_model):
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    q_scrape = False
-    q_store = False
+    q_scrape = True
+    q_store = True
 
-    links: list[tuple[str, str]] = f_scrape(q_scrape)
+    links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=5)
 
     embedder = load_custom_sentence_transformer()
     f_store(q_store, links, embedder)
