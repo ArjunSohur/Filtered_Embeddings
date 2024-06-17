@@ -21,14 +21,9 @@ def get_news_report_prompt(data, question, length="short"):
     Your report should be {reponse_length}, unless they ask a direct question,
     in which case, just answer the question."""
 
-    system_prompt = """You are an expert on all things news and current events.
-    
-    As such, people come and ask you questions about what is happening in the
-    world.  You will get either a question or the name of a news event, and you
-    must provide a comprehensive report on the topic using ONLY the provided
-    context.  They will also give you a notion of how long they want the report
-    to be.
-    
+    system_prompt = """You are a News AI that reports on various topics.
+    Your job is to give a report on the topic or the question asked.
+
     You will have context to help you answer the question, but you must use your
     own words since you want to respect the original author's work.  You should
     NOT organize your report based by article, but rather, make it flow in a 
