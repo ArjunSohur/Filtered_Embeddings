@@ -139,8 +139,8 @@ if __name__ == "__main__":
 
     data: DataFrame = sql3_as_pd("embeddings.db")
 
-    q = "Russia in Ukraine"
-    length = "Medium"
+    q = "What is Biden up to?"
+    length = "medium" # "medium", "long"
     llm = "llama3"
 
     response, sources = f_inference(q, data, embedder, length=length, llm=llm)
