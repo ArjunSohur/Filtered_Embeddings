@@ -13,6 +13,9 @@ from data_prep.vec_db import store_vectors
 
 from inference.queries import sql3_as_pd, get_similar
 
+from inference.llm import inference_llm
+from inference.prompts import get_news_report_prompt
+
 from sentence_transformers import SentenceTransformer
 import os
 
@@ -109,8 +112,8 @@ def f_store(bool, links, embedding_model):
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    q_scrape = True
-    q_store = True
+    q_scrape = False
+    q_store = False
 
     links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=5)
 
@@ -119,7 +122,12 @@ if __name__ == "__main__":
 
     data: DataFrame = sql3_as_pd("embeddings.db")
 
-    txt = "Russia in Ukraine"
-    similar = get_similar(txt, data, embedder, top_n=5, threshold=0.5)
+    q = "Russia in Ukraine"
+    similar = get_similar(q, data, embedder, top_n=5, threshold=0.5)
 
-    print(similar)
+    prompt, system_prompt, sources = get_news_report_prompt(similar, q)
+
+    response = inference_llm(prompt, system_prompt, llm="llama3")
+
+    print(response, "\n\n", sources)
+

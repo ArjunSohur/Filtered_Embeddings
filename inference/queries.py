@@ -28,7 +28,7 @@ def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embedd
         cur.execute(f"SELECT * FROM embeddings WHERE embedding = '{vector}'")
         rows.append(cur.fetchone())
     
-    posts_df = pd.DataFrame(rows, columns=["url", "embedding", "text", "name", "authors", "title", "publication"])
+    posts_df = pd.DataFrame(rows, columns=data.columns)
 
     return posts_df
 
