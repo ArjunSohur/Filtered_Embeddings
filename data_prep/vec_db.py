@@ -44,6 +44,7 @@ def create_db() -> None:
                   authors TEXT,
                   title TEXT,
                   publication_date TEXT,
+                  bias REAL,
                   embedding TEXT)''')
     conn.commit()
     conn.close()

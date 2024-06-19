@@ -11,7 +11,7 @@ from pandas.core.frame import DataFrame
 from data_prep.scrape import scrape
 from data_prep.vec_db import store_vectors
 
-from inference.queries import sql3_as_pd, get_similar
+from inference.queries import sql3_as_pd, get_similar, get_bias_decector, get_bias
 
 from inference.llm import inference_llm
 from inference.prompts import get_news_report_prompt
@@ -119,6 +119,10 @@ def f_inference(q, data, embedder, length = "Short", llm = "llama3"):
 
     response = inference_llm(prompt, system_prompt, llm)
 
+    bias = get_bias(response, get_bias_decector())
+
+    response += f"\n\nDetected Bias: {bias}"
+
     return response, sources
 
 # ---------------------------------------------------------------------------- #
@@ -132,7 +136,7 @@ if __name__ == "__main__":
     q_scrape = True
     q_store = True
 
-    links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=5)
+    links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=10)
 
     embedder = load_custom_sentence_transformer()
     f_store(q_store, links, embedder)
