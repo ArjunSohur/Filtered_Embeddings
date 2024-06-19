@@ -3,7 +3,15 @@ import pandas as pd
 import sqlite3
 from ast import literal_eval
 
-def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embeddings.db") -> pd.DataFrame:
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+# Get similar                                                                  #                       
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embeddings.db", blacklist: list[str] = [], whitelist: list[str] = [], wl_boost: dict = []) -> pd.DataFrame:
     text_vetor = torch.Tensor(embedder.encode(text))
 
     sims = []
@@ -12,8 +20,14 @@ def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embedd
 
 
         sim = torch.nn.functional.cosine_similarity(text_vetor, data_vector, dim=0).item()
-        if sim > threshold:
-            sims.append((data.iloc[i]["embedding"], sim))
+        if sim > threshold and data.iloc[i]["source"] not in blacklist:
+
+            if data.iloc[i]["source"] in whitelist:
+
+                sims.append((data.iloc[i]["embedding"], max(sim + wl_boost[data.iloc[i]["source"]]), 1))
+            else:
+                sims.append((data.iloc[i]["embedding"], sim))
+            
 
     top_n_sims = sorted(sims, key=lambda x: x[1], reverse=True)[:top_n]
 
@@ -32,6 +46,14 @@ def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embedd
 
     return posts_df
 
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+# As dataframe                                                                 #                       
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
 def sql3_as_pd(path: str) -> pd.DataFrame:
     sql = sqlite3.connect(path)
 

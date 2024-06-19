@@ -113,7 +113,7 @@ def process_link(link: Tuple[str, str], embedder: SentenceTransformer) -> None:
     Returns:
         None
     """
-    name: str = link[0]
+    name: str = source_map(link[0])
     url: str = link[1]
     article: Article = Article(url)
     try:
@@ -174,3 +174,129 @@ def store_vectors(links: List[Tuple[str, str]], embedding_model: SentenceTransfo
     end: datetime = datetime.now()
 
     print("Time taken to process", len(links), "Articles:", str(end-start_time))
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+# Source map                                                                   #
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+
+def source_map(src):
+    source = {
+    "Al Jazeera": "Al Jazeera",
+    "BBC World": "BBC News",
+    "CNBC": "CNBC",
+    "CNN Business": "CNN",
+    "CNN Entertainment": "CNN",
+    "CNN Health": "CNN",
+    "CNN Politics": "CNN",
+    "CNN Tech": "CNN",
+    "CNN Top Stories": "CNN",
+    "CNN Travel": "CNN",
+    "CNN US": "CNN",
+    "CNN World": "CNN",
+    "Defence Blog": "Defence Blog",
+    "Global Issues": "Global Issues",
+    "NPR International": "NPR",
+    "NPR US": "NPR",
+    "NYT APAC": "The New York Times",
+    "NYT Africa": "The New York Times",
+    "NYT Americas": "The New York Times",
+    "NYT Arts": "The New York Times",
+    "NYT Arts2": "The New York Times",
+    "NYT Baseball": "The New York Times",
+    "NYT Basketball": "The New York Times",
+    "NYT Books": "The New York Times",
+    "NYT Business": "The New York Times",
+    "NYT College Basketball": "The New York Times",
+    "NYT College Football": "The New York Times",
+    "NYT Dance": "The New York Times",
+    "NYT Deals": "The New York Times",
+    "NYT Dining": "The New York Times",
+    "NYT EU": "The New York Times",
+    "NYT Economy": "The New York Times",
+    "NYT Education": "The New York Times",
+    "NYT Energy": "The New York Times",
+    "NYT Environment": "The New York Times",
+    "NYT Football": "The New York Times",
+    "NYT Golf": "The New York Times",
+    "NYT Health": "The New York Times",
+    "NYT Hockey": "The New York Times",
+    "NYT Love": "The New York Times",
+    "NYT ME": "The New York Times",
+    "NYT Movies": "The New York Times",
+    "NYT Music": "The New York Times",
+    "NYT Personal Tech": "The New York Times",
+    "NYT Science": "The New York Times",
+    "NYT Small Business": "The New York Times",
+    "NYT Soccer": "The New York Times",
+    "NYT Space": "The New York Times",
+    "NYT Sports": "The New York Times",
+    "NYT Style": "The New York Times",
+    "NYT TV": "The New York Times",
+    "NYT Tech": "The New York Times",
+    "NYT Tennis": "The New York Times",
+    "NYT Theater": "The New York Times",
+    "NYT Travel": "The New York Times",
+    "NYT US": "The New York Times",
+    "NYT Well Blog": "The New York Times",
+    "NYT World": "The New York Times",
+    "RT News": "RT",
+    "SHM Rugby1": "The Sydney Morning Herald",
+    "SHM Rugby2": "The Sydney Morning Herald",
+    "SMH Culture": "The Sydney Morning Herald",
+    "SMH Environment": "The Sydney Morning Herald",
+    "SMH Federal Politics": "The Sydney Morning Herald",
+    "SMH Food": "The Sydney Morning Herald",
+    "SMH Latest": "The Sydney Morning Herald",
+    "SMH Lifestyle": "The Sydney Morning Herald",
+    "SMH NSW": "The Sydney Morning Herald",
+    "SMH Property": "The Sydney Morning Herald",
+    "SMH Sports": "The Sydney Morning Herald",
+    "SMH Tech": "The Sydney Morning Herald",
+    "SMH Travel": "The Sydney Morning Herald",
+    "SMH business": "The Sydney Morning Herald",
+    "SMH national": "The Sydney Morning Herald",
+    "SMH world": "The Sydney Morning Herald",
+    "SUN_UK Fabulous": "The Sun (UK)",
+    "SUN_UK Health": "The Sun (UK)",
+    "SUN_UK Money": "The Sun (UK)",
+    "SUN_UK Motors": "The Sun (UK)",
+    "SUN_UK Showbiz": "The Sun (UK)",
+    "SUN_UK Sport": "The Sun (UK)",
+    "SUN_UK Tech": "The Sun (UK)",
+    "SUN_UK Travel": "The Sun (UK)",
+    "SUN_US Entertainment": "The Sun (US)",
+    "SUN_US Lifestyle": "The Sun (US)",
+    "SUN_US Money": "The Sun (US)",
+    "SUN_US Motors": "The Sun (US)",
+    "SUN_US News": "The Sun (US)",
+    "SUN_US Sport": "The Sun (US)",
+    "SUN_US Tech": "The Sun (US)",
+    "SUN_US Travel": "The Sun (US)",
+    "TIME": "Time",
+    "The Cipher": "The Cipher Brief",
+    "Times of India": "Times of India",
+    "WashPo Business": "The Washington Post",
+    "WashPo Entertainment": "The Washington Post",
+    "WashPo Lifestyle": "The Washington Post",
+    "WashPo Politics": "The Washington Post",
+    "WashPo Sports": "The Washington Post",
+    "WashPo Tech": "The Washington Post",
+    "WashPo US": "The Washington Post",
+    "WashPo World": "The Washington Post",
+    "World Online": "World Online",
+    "Yahoo Business": "Yahoo",
+    "Yahoo Entertainment": "Yahoo",
+    "Yahoo Finance": "Yahoo",
+    "Yahoo Health": "Yahoo",
+    "Yahoo News": "Yahoo",
+    "Yahoo Politics": "Yahoo",
+    "Yahoo Sports": "Yahoo",
+    "Yahoo US": "Yahoo",
+    "Yahoo World": "Yahoo"
+    }
+
+    return source[src]

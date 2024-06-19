@@ -1,5 +1,5 @@
 Al Jazeera, https://www.aljazeera.com/xml/rss/all.xml
-BBC Worls, https://feeds.bbci.co.uk/news/world/rss.xml
+BBC World, https://feeds.bbci.co.uk/news/world/rss.xml
 CNBC, https://www.cnbc.com/id/100727362/device/rss/rss.html
 CNN Business, http://rss.cnn.com/rss/money_latest.rss
 CNN Entertainment, http://rss.cnn.com/rss/cnn_showbiz.rss
