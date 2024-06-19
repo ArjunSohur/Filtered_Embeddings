@@ -7,7 +7,7 @@ from ast import literal_eval
 from tqdm import tqdm
 import os
 from typing import List, Tuple, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -101,7 +101,7 @@ def process_links_chunk(links_chunk: List[Tuple[str, str]], embedder: SentenceTr
         if count % 50 == 0:
             print(f"Completed {count} links in thread {thread}")
 
-def process_link(link: Tuple[str, str], embedder: SentenceTransformer) -> None:
+def process_link(link: Tuple[str, str, str], embedder: SentenceTransformer) -> None:
     """
     Processes a single link from a list of scraped links. It performs the following steps:
 
@@ -117,13 +117,14 @@ def process_link(link: Tuple[str, str], embedder: SentenceTransformer) -> None:
     name: str = source_map(link[0])
     url: str = link[1]
     article: Article = Article(url)
+    date = link[2]
     try:
         article.download()
         article.parse()
         text: str = article.text
         authors: List[str] = article.authors
         title: str = article.title
-        publication: Optional[str] = article.publish_date.strftime("%Y-%m-%d") if article.publish_date else None
+        publication: str = date
 
         embedding = embedder.encode(text, convert_to_tensor=True)
         embedding_string = '[' + ', '.join([str(value.item()) for value in embedding.flatten()]) + ']'
@@ -175,6 +176,30 @@ def store_vectors(links: List[Tuple[str, str]], embedding_model: SentenceTransfo
     end: datetime = datetime.now()
 
     print("Time taken to process", len(links), "Articles:", str(end-start_time))
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+# Clean data                                                                   #
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
+def clean_database(time_delta: timedelta = timedelta(days=7)) -> None:
+    t = datetime.now()
+
+    # If older than time_delta, delete
+    conn: sqlite3.Connection = sqlite3.connect('embeddings.db')
+    c: sqlite3.Cursor = conn.cursor()
+    c.execute("SELECT url, publication_date FROM embeddings")
+    rows = c.fetchall()
+
+    for row in rows:
+        if t - datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S") > time_delta:
+            c.execute(f"DELETE FROM embeddings WHERE url = '{row[0]}'")
+    conn.commit()
+    conn.close()
+
+    print("Database cleaned in", datetime.now() - t)
 
 # ---------------------------------------------------------------------------- #
 #                                                                              #

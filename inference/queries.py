@@ -70,7 +70,7 @@ def get_bias(text, classifier):
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
-def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embeddings.db", blacklist: list[str] = [], whitelist: list[str] = [], wl_boost: dict = []) -> pd.DataFrame:
+def get_similar(text, data, embedder, top_n=3, threshold=0.5, sql_path = "embeddings.db", blacklist: list[str] = [], whitelist: list[str] = [], wl_boost: dict = []) -> pd.DataFrame:
     text_vetor = torch.Tensor(embedder.encode(text))
 
     sims = []
@@ -102,8 +102,8 @@ def get_similar(text, data, embedder, top_n=5, threshold=0.5, sql_path = "embedd
     posts_df = pd.DataFrame(rows, columns=data.columns)
 
     # get bias of each post and add it to the dataframe
-    classifier = get_bias_decector()
-    posts_df["bias"] = posts_df["text"].map(lambda x: get_bias(x, classifier))
+    # classifier = get_bias_decector()
+    # posts_df["bias"] = posts_df["text"].map(lambda x: get_bias(x, classifier))
 
     return posts_df
 

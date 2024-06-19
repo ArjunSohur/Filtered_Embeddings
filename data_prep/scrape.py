@@ -86,7 +86,8 @@ def parse_section(
         print(f"Error parsing date for {entry.link}: {e}")
 
       if published_time and published_time > time_threshold:
-        links.append((name, entry.link)) 
+        pt_str = published_time.strftime("%Y-%m-%d %H:%M:%S")
+        links.append((name, entry.link, pt_str)) 
 
   link_list.extend(links)  
 
@@ -157,8 +158,6 @@ def scrape(num_feeds = None) -> list[tuple[str, str]]:
     print("Time taken to get", len(links), "RSS links:", str(end-start_time))
 
     return links
-
-
 
 # ---------------------------------------------------------------------------- #
 #                                                                              #

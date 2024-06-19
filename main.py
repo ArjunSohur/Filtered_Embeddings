@@ -7,9 +7,10 @@
 # ---------------------------------------------------------------------------- #
 import pandas as pd
 from pandas.core.frame import DataFrame
+from datetime import datetime, timedelta
 
 from data_prep.scrape import scrape
-from data_prep.vec_db import store_vectors
+from data_prep.vec_db import store_vectors, clean_database
 
 from inference.queries import sql3_as_pd, get_similar, get_bias_decector, get_bias
 
@@ -73,8 +74,8 @@ def f_scrape(bool, num_feeds = None) -> list[tuple[str, str]]:
         links = list(set(links))
 
         with open("data_prep/links.txt", "w") as f:
-            for name, link in links:
-                f.write(f"{name}, {link}\n")
+            for name, link, date in links:
+                f.write(f"{name}, {link}, {date}\n")
     else:
         with open("data_prep/links.txt", "r") as f:
             links = f.readlines()
@@ -119,9 +120,8 @@ def f_inference(q, data, embedder, length = "Short", llm = "llama3"):
 
     response = inference_llm(prompt, system_prompt, llm)
 
-    bias = get_bias(response, get_bias_decector())
-
-    response += f"\n\nDetected Bias: {bias}"
+    # bias = get_bias(response, get_bias_decector())
+    # response += f"\n\nDetected Bias: {bias}"
 
     return response, sources
 
@@ -133,7 +133,7 @@ def f_inference(q, data, embedder, length = "Short", llm = "llama3"):
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    q_scrape = True
+    q_scrape = False
     q_store = True
 
     links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=10)
@@ -143,13 +143,15 @@ if __name__ == "__main__":
 
     data: DataFrame = sql3_as_pd("embeddings.db")
 
-    q = "What is Biden up to?"
-    length = "medium" # "medium", "long"
-    llm = "llama3"
+    clean_database(time_delta=timedelta(days=7))
 
-    response, sources = f_inference(q, data, embedder, length=length, llm=llm)
+    # q = "What is Biden up to?"
+    # length = "medium" # "medium", "long"
+    # llm = "llama3"
 
-    word_count = len(response.split())
+    # response, sources = f_inference(q, data, embedder, length=length, llm=llm)
 
-    print(response, "\n\n", sources, "\n\n", f"Word Count: {word_count}")
+    # word_count = len(response.split())
+
+    # print(response, "\n\n", sources, "\n\n", f"Word Count: {word_count}")
 
