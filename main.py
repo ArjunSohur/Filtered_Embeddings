@@ -129,8 +129,8 @@ def f_inference(q, data, embedder, length = "Short", llm = "llama3"):
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 if __name__ == "__main__":
-    q_scrape = False
-    q_store = False
+    q_scrape = True
+    q_store = True
 
     links: list[tuple[str, str]] = f_scrape(q_scrape, num_feeds=5)
 
