@@ -70,8 +70,14 @@ def get_bias(text, classifier):
 # ---------------------------------------------------------------------------- #
 #                                                                              #
 # ---------------------------------------------------------------------------- #
-def get_similar(text, data, embedder, top_n=3, threshold=0.5, sql_path = "embeddings.db", blacklist: list[str] = [], whitelist: list[str] = [], wl_boost: dict = []) -> pd.DataFrame:
+def get_similar(text, data, embedder, top_n=3, threshold=0.5, sql_path = "embeddings.db",\
+                 blacklist: list[str] = [], whitelist: list[str] = [], wl_boost: dict = [], \
+                    date_filter:dict = None) -> pd.DataFrame:
     text_vetor = torch.Tensor(embedder.encode(text))
+
+    if date_filter:
+        data = data[data["date"] >= date_filter["start"]] if "start" in date_filter else data
+        data = data[data["date"] <= date_filter["end"]]  if "end" in date_filter else data
 
     sims = []
     for i in range(len(data)):
